@@ -74,15 +74,18 @@ namespace HTDialer
             clipboardMonitor.ClipboardEvent += new EventHandler<HTDialer.Utils.ClipboardMonitor.ClipboardEventArgs>(hook_clipboard_event);
 
             // update UI
+            string[] s = String.IsNullOrEmpty(configurationManager.Configuration().Credentials) ? null : configurationManager.Configuration().Credentials.Split(':');
             this.fieldHotkey.Text = configurationManager.Configuration().Hotkey;
+            this.fieldHttpUsername.Text = (s != null ? s[0] : null);
+            this.fieldHttpPassword.Text = (s != null ? s[1] : null);
             this.fieldUrl.Text = configurationManager.Configuration().Url;
             this.fieldRegex.Text = configurationManager.Configuration().Regex;
-
             // do hide
             //this.ShowInTaskbar = false;
             this.WindowState = FormWindowState.Minimized;
             //
             Log("ready");
+            Log("test number: +7 (123) 123-45-67");
         }
 
         public void Log(string msg)
@@ -110,7 +113,7 @@ namespace HTDialer
             _flagHttpClientBusy = true;
             try
             {
-                string rsp = HttpHelper.HttpGet((string)url);
+                string rsp = HttpHelper.HttpGet(configurationManager.Configuration().Credentials, (string)url);
                 Log("http-response: " + rsp);
             }
             catch (Exception e)
@@ -180,6 +183,8 @@ namespace HTDialer
             string hkey = fieldHotkey.Text;
             string regex = fieldRegex.Text;
             string url = fieldUrl.Text;
+            string credentialsUN = fieldHttpUsername.Text;
+            string credentialsPW = fieldHttpPassword.Text;
             //
             if (!hotkeyMonitor.IsValid(hkey))
             {
@@ -195,6 +200,7 @@ namespace HTDialer
             configurationManager.Configuration().Regex = regex;
             configurationManager.Configuration().Hotkey = hkey;
             configurationManager.Configuration().Url = url;
+            configurationManager.Configuration().Credentials = (String.IsNullOrEmpty(credentialsUN) ? "" : credentialsUN + ":" + credentialsPW);
             //            
             try
             {
@@ -258,6 +264,21 @@ namespace HTDialer
             {
                 Application.Exit();
             }
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fieldRegex_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            fieldLogArea.Text = "";
         }
 
     }

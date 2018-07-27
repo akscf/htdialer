@@ -18,6 +18,7 @@ namespace HTDialer.Models.Configurations
         public string Url { get; set; }
         public string Hotkey { get; set; }
         public string Regex { get; set; }
+        public string Credentials { get; set; }
 
         public Configuration ()
         {
@@ -31,7 +32,7 @@ namespace HTDialer.Models.Configurations
 
         public override string ToString()
         {
-            return "version: " + Version + "url: " + Url + ", hotkey: " + Hotkey + ", regex: " + Regex;
+            return "version: " + Version + "url: " + Url + ", hotkey: " + Hotkey + ", regex: " + Regex + ", Credentials: " + Credentials;
         }
     }
 }

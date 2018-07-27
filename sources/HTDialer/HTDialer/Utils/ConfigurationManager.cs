@@ -16,7 +16,7 @@ namespace HTDialer.Utils
 {
     class ConfigurationManager
     {
-        private const int VERSION = 1;
+        private const int VERSION = 3;
         private String filename;
         public Configuration configuration;
 
@@ -29,7 +29,7 @@ namespace HTDialer.Utils
         {
             if (!System.IO.File.Exists(filename))
             {
-                CreateDefault();
+                CreateDefault(false);
                 Save();
             }
             else
@@ -43,7 +43,7 @@ namespace HTDialer.Utils
             //
             if (VERSION.CompareTo(configuration.Version) != 0)
             {
-                CreateDefault();
+                CreateDefault(true);
                 Save();
             }
 
@@ -74,12 +74,15 @@ namespace HTDialer.Utils
         }
 
         // ================================================================================================================
-        private Configuration CreateDefault()
+        private Configuration CreateDefault(bool storeOld)
         {
+            Configuration old = configuration;
+            //
             configuration = new Configuration(VERSION);
-            configuration.Url = @"http://127.0.0.1/cgi-bin/cgiServer.exx?number=%number%";
-            configuration.Hotkey = @"ctrl+alt+f12";
-            configuration.Regex = @"^\d{7,11}$"; // @"^\+??\d{7,11}$";
+            configuration.Url = storeOld && !String.IsNullOrEmpty(old.Url) ?  old.Url : @"http://127.0.0.1/cgi-bin/cgiServer.exx?number=%number%";
+            configuration.Hotkey = storeOld && !String.IsNullOrEmpty(old.Hotkey) ? old.Hotkey: @"ctrl+alt+f12";
+            configuration.Regex = storeOld && !String.IsNullOrEmpty(old.Regex) ? old.Regex : @"^\d{7,11}$";
+            configuration.Credentials = storeOld && !String.IsNullOrEmpty(old.Credentials) ? old.Credentials : "";
             //
             return configuration;
         }
