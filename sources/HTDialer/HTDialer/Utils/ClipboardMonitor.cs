@@ -16,6 +16,7 @@ namespace HTDialer.Utils
     class ClipboardMonitor
     {
         public event EventHandler<ClipboardEventArgs> ClipboardEvent;
+        private bool MOUSE_HOOK_ENABLE = false;
         private Window _window = new Window();
         private IKeyboardMouseEvents _ghook;
         private volatile bool _isMouseDown;
@@ -30,42 +31,25 @@ namespace HTDialer.Utils
                     ClipboardEvent(this, args);
             };
 
-            _ghook = Hook.GlobalEvents();
-            _ghook.MouseDoubleClick += async (o, args) => await this.MouseDoubleClicked(o, args);
-            _ghook.MouseDown += async (o, args) => await this.MouseDown(o, args);
-            _ghook.MouseUp += async (o, args) => await this.MouseUp(o, args);
-        }
-
-        public void CopyActiveSelection()
-        {
-            SendKeys.SendWait("^c");
-            //IntPtr activeWindow = Win32Helper.GetForegroundWindow();
-            //if (activeWindow != IntPtr.Zero)
-            //{
-                /*pressKey(Keys.ControlKey, false);
-                pressKey(Keys.C, false);
-                pressKey(Keys.C, true);
-                pressKey(Keys.ControlKey, true);*/
-            //}
+            if (MOUSE_HOOK_ENABLE)
+            {
+                _ghook = Hook.GlobalEvents();
+                _ghook.MouseDoubleClick += async (o, args) => await this.MouseDoubleClicked(o, args);
+                _ghook.MouseDown += async (o, args) => await this.MouseDown(o, args);
+                _ghook.MouseUp += async (o, args) => await this.MouseUp(o, args);
+            }            
         }
 
         #region IDisposable Members
         public void Dispose()
         {
-            _ghook.Dispose();
+            if (MOUSE_HOOK_ENABLE)
+            {
+                _ghook.Dispose();
+            }
             _window.Dispose();
         }
         #endregion
-
-        private void pressKey(Keys key, bool up)
-        {
-            const int KEYEVENTF_EXTENDEDKEY = 0x1;
-            const int KEYEVENTF_KEYUP = 0x2;
-            if (up)
-                Win32Helper.keybd_event((byte)key, 0x45, KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP, (UIntPtr)0);
-            else
-                Win32Helper.keybd_event((byte)key, 0x45, KEYEVENTF_EXTENDEDKEY, (UIntPtr)0);
-        }
 
         private async Task MouseUp(object sender, MouseEventArgs e)
         {
@@ -75,8 +59,6 @@ namespace HTDialer.Utils
             {
                 await Task.Run(() =>
                 {
-                    //if (this._window.CancellationTokenSource.Token.IsCancellationRequested)
-                    //    return;
                     SendKeys.SendWait("^c");
                 });
                 this._isMouseDown = false;
@@ -88,9 +70,6 @@ namespace HTDialer.Utils
         {
             await Task.Run(() =>
             {
-                //if (this._mainWindow.CancellationTokenSource.Token.IsCancellationRequested)
-                //    return;
-
                 this._mouseFirstPoint = e.Location;
                 this._isMouseDown = true;
             });
@@ -101,9 +80,6 @@ namespace HTDialer.Utils
             this._isMouseDown = false;
             await Task.Run(() =>
             {
-                //if (this._mainWindow.CancellationTokenSource.Token.IsCancellationRequested)
-                //    return;
-
                 SendKeys.SendWait("^c");
             });
         }

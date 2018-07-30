@@ -16,7 +16,7 @@ namespace HTDialer.Utils
 {
     class ConfigurationManager
     {
-        private const int VERSION = 3;
+        private const int VERSION = 4;
         private String filename;
         public Configuration configuration;
 
@@ -83,6 +83,7 @@ namespace HTDialer.Utils
             configuration.Hotkey = storeOld && !String.IsNullOrEmpty(old.Hotkey) ? old.Hotkey: @"ctrl+alt+f12";
             configuration.Regex = storeOld && !String.IsNullOrEmpty(old.Regex) ? old.Regex : @"^\d{7,11}$";
             configuration.Credentials = storeOld && !String.IsNullOrEmpty(old.Credentials) ? old.Credentials : "";
+            configuration.ShowInTaskbar = storeOld && old.ShowInTaskbar != null ? old.ShowInTaskbar : false;
             //
             return configuration;
         }

@@ -19,6 +19,7 @@ namespace HTDialer.Models.Configurations
         public string Hotkey { get; set; }
         public string Regex { get; set; }
         public string Credentials { get; set; }
+        public bool ShowInTaskbar { get; set; }
 
         public Configuration ()
         {
@@ -32,7 +33,7 @@ namespace HTDialer.Models.Configurations
 
         public override string ToString()
         {
-            return "version: " + Version + "url: " + Url + ", hotkey: " + Hotkey + ", regex: " + Regex + ", Credentials: " + Credentials;
+            return "version: " + Version + "url: " + Url + ", hotkey: " + Hotkey + ", regex: " + Regex + ", Credentials: " + Credentials + ", ShowInTaskbar=" + ShowInTaskbar;
         }
     }
 }

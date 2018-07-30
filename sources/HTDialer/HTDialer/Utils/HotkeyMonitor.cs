@@ -22,7 +22,7 @@ namespace HTDialer.Utils
         private Regex rx;
         private String oldKey;
         private Window _window = new Window();
-        private int _currentId;
+        private int _currentId = 0;
 
         public HotkeyMonitor()
         {

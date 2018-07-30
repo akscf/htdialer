@@ -29,6 +29,8 @@ namespace HTDialer
         private ClipboardMonitor clipboardMonitor;
         private DestinationValidator destinationValidator;
         private bool _flagHttpClientBusy = false;
+        private int _flagNeedCBCapture = 0;
+        private bool _flagAppExit = false;
         private string _numberOriginal;
 
         public Form1()
@@ -56,7 +58,6 @@ namespace HTDialer
             }
             catch (Exception exc)
             {
-                // is not critical error, you can redefine it
                 destinationValidator.ApplyRegex(null);
                 Log("WARN: malformed pattern: " + configurationManager.Configuration().Regex + ", exp: " + exc);
             }
@@ -70,7 +71,7 @@ namespace HTDialer
             {
                 Log("WARN: can't install hotkey, exc=" + exc);
             }
-            // clipboard
+            // clipboard            
             clipboardMonitor.ClipboardEvent += new EventHandler<HTDialer.Utils.ClipboardMonitor.ClipboardEventArgs>(hook_clipboard_event);
 
             // update UI
@@ -81,11 +82,12 @@ namespace HTDialer
             this.fieldUrl.Text = configurationManager.Configuration().Url;
             this.fieldRegex.Text = configurationManager.Configuration().Regex;
             // do hide
-            //this.ShowInTaskbar = false;
+            this.ShowInTaskbar = configurationManager.Configuration().ShowInTaskbar;
             this.WindowState = FormWindowState.Minimized;
             //
+            new Thread(CapClipboardFn).Start();
+            //
             Log("ready");
-            Log("test number: +7 (123) 123-45-67");
         }
 
         public void Log(string msg)
@@ -119,11 +121,26 @@ namespace HTDialer
             catch (Exception e)
             {
                 ShowBallon("Call failed", "Unexpected error, see log for details");
-                Log("ERROR: " + url +", exception: " + e);
+                Log("ERROR: " + url + ", exception: " + e);
             }
             finally
             {
                 _flagHttpClientBusy = false;
+            }
+        }
+
+        private void CapClipboardFn()
+        {
+            while (!_flagAppExit)
+            {
+                if (_flagNeedCBCapture > 0)
+                {
+                    Keyboard.SimulateKeyStroke('c', ctrl: true);
+                    //SendKeys.SendWait("^c");
+                    Interlocked.Decrement(ref _flagNeedCBCapture);
+                    Log("CTRL+C");
+                }
+                Thread.Sleep(100);
             }
         }
 
@@ -138,8 +155,7 @@ namespace HTDialer
             ShowBallon("Dialing...", _numberOriginal);
             //
             string url = configurationManager.Configuration().Url.Replace("%number%", n);
-            Thread th = new Thread(HttpReqFn);
-            th.Start(url);
+            new Thread(HttpReqFn).Start(url);
         }
 
         private void ShowBallon(string h, string b)
@@ -154,8 +170,7 @@ namespace HTDialer
         // ===============================================================================================================================
         private void hook_hotkey_pressed(object sender, HTDialer.Utils.HotkeyMonitor.KeyPressedEventArgs e)
         {
-            //clipboardMonitor.CopyActiveSelection();
-            DoMakeCall();
+            Interlocked.Increment(ref _flagNeedCBCapture);
         }
 
         private void hook_clipboard_event(object sender, HTDialer.Utils.ClipboardMonitor.ClipboardEventArgs e)
@@ -163,12 +178,10 @@ namespace HTDialer
             string dst = e.Text;
             _numberOriginal = e.Text;
             //
-            if (dst.Length > 64)
-            {
-                return;
-            }
-            //Log("CLIPBOARD: " + dst);
-            // format and check 
+            if (dst.Length > 64) return;
+            //
+            Log("CLIPBOARD_TEXT: " + dst);
+            // 
             dst = destinationValidator.Format(dst);
             if (!destinationValidator.IsValid(dst))
             {
@@ -201,6 +214,7 @@ namespace HTDialer
             configurationManager.Configuration().Hotkey = hkey;
             configurationManager.Configuration().Url = url;
             configurationManager.Configuration().Credentials = (String.IsNullOrEmpty(credentialsUN) ? "" : credentialsUN + ":" + credentialsPW);
+            configurationManager.Configuration().ShowInTaskbar = fieldVisibleInTaskbar.Checked;
             //            
             try
             {
@@ -212,6 +226,8 @@ namespace HTDialer
                 MessageBox.Show(exc.ToString(), "Apply failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+            // update UI
+            this.ShowInTaskbar = configurationManager.Configuration().ShowInTaskbar;
             // 
             configurationManager.Save();
         }
@@ -220,7 +236,6 @@ namespace HTDialer
         {
             if (this.WindowState == FormWindowState.Minimized)
             {
-                //Hide();
             }
         }
 
@@ -237,7 +252,6 @@ namespace HTDialer
         {
             if (this.WindowState == FormWindowState.Minimized || this.Visible == false)
             {
-                //Show();
                 this.WindowState = FormWindowState.Normal;
             }
             else
@@ -262,16 +276,12 @@ namespace HTDialer
             DialogResult dialogResult = MessageBox.Show("Are you sure to close the application?", "Closing application", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
+                this._flagAppExit = true;
                 Application.Exit();
             }
         }
 
         private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void fieldRegex_TextChanged(object sender, EventArgs e)
         {
 
         }
