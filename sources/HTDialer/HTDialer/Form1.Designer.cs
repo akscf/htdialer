@@ -84,7 +84,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.fieldCutchars);
             this.groupBox1.Controls.Add(this.label7);
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.fieldHotkey);
             this.groupBox1.Controls.Add(this.fieldShowInTaskbar);
             this.groupBox1.Controls.Add(this.fieldHttpUsername);
             this.groupBox1.Controls.Add(this.fieldHttpPassword);
@@ -92,8 +94,6 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.buttonApply);
-            this.groupBox1.Controls.Add(this.fieldHotkey);
-            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.fieldUrl);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label2);
@@ -107,7 +107,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(27, 157);
+            this.label6.Location = new System.Drawing.Point(65, 159);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(36, 13);
             this.label6.TabIndex = 14;
@@ -116,7 +116,7 @@
             // fieldShowInTaskbar
             // 
             this.fieldShowInTaskbar.AutoSize = true;
-            this.fieldShowInTaskbar.Location = new System.Drawing.Point(76, 157);
+            this.fieldShowInTaskbar.Location = new System.Drawing.Point(107, 157);
             this.fieldShowInTaskbar.Name = "fieldShowInTaskbar";
             this.fieldShowInTaskbar.Size = new System.Drawing.Size(102, 17);
             this.fieldShowInTaskbar.TabIndex = 13;
@@ -125,38 +125,38 @@
             // 
             // fieldHttpUsername
             // 
-            this.fieldHttpUsername.Location = new System.Drawing.Point(76, 126);
+            this.fieldHttpUsername.Location = new System.Drawing.Point(106, 131);
             this.fieldHttpUsername.Name = "fieldHttpUsername";
-            this.fieldHttpUsername.Size = new System.Drawing.Size(164, 20);
+            this.fieldHttpUsername.Size = new System.Drawing.Size(134, 20);
             this.fieldHttpUsername.TabIndex = 12;
             // 
             // fieldHttpPassword
             // 
-            this.fieldHttpPassword.Location = new System.Drawing.Point(309, 124);
+            this.fieldHttpPassword.Location = new System.Drawing.Point(309, 131);
             this.fieldHttpPassword.Name = "fieldHttpPassword";
             this.fieldHttpPassword.Size = new System.Drawing.Size(167, 20);
             this.fieldHttpPassword.TabIndex = 11;
             // 
             // fieldRegex
             // 
-            this.fieldRegex.Location = new System.Drawing.Point(76, 45);
+            this.fieldRegex.Location = new System.Drawing.Point(106, 22);
             this.fieldRegex.Name = "fieldRegex";
-            this.fieldRegex.Size = new System.Drawing.Size(400, 20);
+            this.fieldRegex.Size = new System.Drawing.Size(370, 20);
             this.fieldRegex.TabIndex = 7;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 49);
+            this.label3.Location = new System.Drawing.Point(9, 26);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(41, 13);
+            this.label3.Size = new System.Drawing.Size(92, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Regex:";
+            this.label3.Text = "Validation pattern:";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(246, 126);
+            this.label5.Location = new System.Drawing.Point(246, 135);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(56, 13);
             this.label5.TabIndex = 10;
@@ -164,15 +164,15 @@
             // 
             // fieldHotkey
             // 
-            this.fieldHotkey.Location = new System.Drawing.Point(76, 19);
+            this.fieldHotkey.Location = new System.Drawing.Point(106, 74);
             this.fieldHotkey.Name = "fieldHotkey";
-            this.fieldHotkey.Size = new System.Drawing.Size(400, 20);
+            this.fieldHotkey.Size = new System.Drawing.Size(370, 20);
             this.fieldHotkey.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 23);
+            this.label1.Location = new System.Drawing.Point(56, 78);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 13);
             this.label1.TabIndex = 0;
@@ -180,15 +180,15 @@
             // 
             // fieldUrl
             // 
-            this.fieldUrl.Location = new System.Drawing.Point(76, 97);
+            this.fieldUrl.Location = new System.Drawing.Point(107, 100);
             this.fieldUrl.Name = "fieldUrl";
-            this.fieldUrl.Size = new System.Drawing.Size(400, 20);
+            this.fieldUrl.Size = new System.Drawing.Size(370, 20);
             this.fieldUrl.TabIndex = 3;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 126);
+            this.label4.Location = new System.Drawing.Point(42, 135);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 8;
@@ -197,7 +197,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 101);
+            this.label2.Location = new System.Drawing.Point(69, 104);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 13);
             this.label2.TabIndex = 2;
@@ -277,7 +277,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(8, 74);
+            this.label7.Location = new System.Drawing.Point(45, 52);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(55, 13);
             this.label7.TabIndex = 15;
@@ -285,9 +285,9 @@
             // 
             // fieldCutchars
             // 
-            this.fieldCutchars.Location = new System.Drawing.Point(76, 71);
+            this.fieldCutchars.Location = new System.Drawing.Point(106, 48);
             this.fieldCutchars.Name = "fieldCutchars";
-            this.fieldCutchars.Size = new System.Drawing.Size(400, 20);
+            this.fieldCutchars.Size = new System.Drawing.Size(370, 20);
             this.fieldCutchars.TabIndex = 16;
             // 
             // Form1

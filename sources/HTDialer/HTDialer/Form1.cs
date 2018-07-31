@@ -258,7 +258,7 @@ namespace HTDialer
 
         private void buttonCloseApp_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Are you sure to close the application?", "Closing application", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Are you sure to quit the application?", "Closing application", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
                 Application.Exit();
