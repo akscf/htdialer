@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HTDialer.Models.Configurations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,27 +14,41 @@ namespace HTDialer.Utils
 {
     class DestinationValidator
     {
+        private char[] cutChars;
         private Regex regx;
 
-        public void ApplyRegex(string pattern)
+        public void Configure(Configuration configuration)
         {
-            if (!String.IsNullOrEmpty(pattern))
-            {
-                regx = new Regex(pattern);
-            }
-            else
+            if (configuration == null)
             {
                 regx = null;
-            }            
+                cutChars = null;
+                return;
+            }
+            // 
+            regx = String.IsNullOrEmpty(configuration.Regex) ? null : new Regex(configuration.Regex);
+            cutChars = String.IsNullOrEmpty(configuration.CutChars) ? null : configuration.CutChars.ToCharArray();
         }
 
-        public string Format(string destinationNumber)
+        public string Clear(string destinationNumber)
         {
             if (String.IsNullOrEmpty(destinationNumber))
             {
                 return destinationNumber;
             }
-            return destinationNumber.Replace(" ", "").Replace("+", "").Replace("-", "").Replace("(", "").Replace(")", "");
+            //
+            if (cutChars == null)
+            {
+                return destinationNumber.Replace(" ", "");
+            }
+            //
+            string s = destinationNumber;
+            foreach (char e in cutChars)
+            {
+                s = s.Replace(e, ' ');
+            }
+            //
+            return s.Replace(" ", "");
         }
 
         public bool IsValid(string destinationNumber)

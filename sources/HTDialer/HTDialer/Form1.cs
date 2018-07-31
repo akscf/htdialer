@@ -15,8 +15,6 @@ using System.Windows.Automation;
 
 /**
  *
- * test: +7(123)123-45-67
- * 
  * @author AlexandrinK <aks@cforge.org>
  */
 namespace HTDialer
@@ -29,8 +27,7 @@ namespace HTDialer
         private ClipboardMonitor clipboardMonitor;
         private DestinationValidator destinationValidator;
         private bool _flagHttpClientBusy = false;
-        private int _flagNeedCBCapture = 0;
-        private bool _flagAppExit = false;
+        private bool _flagActionDoCall = false;
         private string _numberOriginal;
 
         public Form1()
@@ -54,12 +51,12 @@ namespace HTDialer
             // regexp
             try
             {
-                destinationValidator.ApplyRegex(configurationManager.Configuration().Regex);
+                destinationValidator.Configure(configurationManager.Configuration());
             }
             catch (Exception exc)
             {
-                destinationValidator.ApplyRegex(null);
-                Log("WARN: malformed pattern: " + configurationManager.Configuration().Regex + ", exp: " + exc);
+                destinationValidator.Configure(null);
+                Log("WARN: can't initialize validator: " + exc);
             }
             // hotkeys
             hotkeyMonitor.KeyPressed += new EventHandler<HTDialer.Utils.HotkeyMonitor.KeyPressedEventArgs>(hook_hotkey_pressed);
@@ -73,7 +70,6 @@ namespace HTDialer
             }
             // clipboard            
             clipboardMonitor.ClipboardEvent += new EventHandler<HTDialer.Utils.ClipboardMonitor.ClipboardEventArgs>(hook_clipboard_event);
-
             // update UI
             string[] s = String.IsNullOrEmpty(configurationManager.Configuration().Credentials) ? null : configurationManager.Configuration().Credentials.Split(':');
             this.fieldHotkey.Text = configurationManager.Configuration().Hotkey;
@@ -81,13 +77,11 @@ namespace HTDialer
             this.fieldHttpPassword.Text = (s != null ? s[1] : null);
             this.fieldUrl.Text = configurationManager.Configuration().Url;
             this.fieldRegex.Text = configurationManager.Configuration().Regex;
+            this.fieldCutchars.Text = configurationManager.Configuration().CutChars;
+            this.fieldShowInTaskbar.Checked = configurationManager.Configuration().ShowInTaskbar;
             // do hide
             this.ShowInTaskbar = configurationManager.Configuration().ShowInTaskbar;
             this.WindowState = FormWindowState.Minimized;
-            //
-            new Thread(CapClipboardFn).Start();
-            //
-            Log("ready");
         }
 
         public void Log(string msg)
@@ -98,7 +92,7 @@ namespace HTDialer
                 return;
             }
             string str = fieldLogArea.Text;
-            if (str != null && str.Length > 512)
+            if (str != null && str.Length > 1024)
                 fieldLogArea.Text = msg + Environment.NewLine;
             else
                 fieldLogArea.Text += msg + Environment.NewLine;
@@ -108,7 +102,7 @@ namespace HTDialer
         {
             if (_flagHttpClientBusy)
             {
-                Log("Try again later, another request active");
+                ShowBallon("Dialing failed", "Dialer is busy, try again later");
                 return;
             }
             //
@@ -116,31 +110,17 @@ namespace HTDialer
             try
             {
                 string rsp = HttpHelper.HttpGet(configurationManager.Configuration().Credentials, (string)url);
-                Log("http-response: " + rsp);
+                //Log("http-response: " + rsp);
             }
             catch (Exception e)
             {
-                ShowBallon("Call failed", "Unexpected error, see log for details");
-                Log("ERROR: " + url + ", exception: " + e);
+                ShowBallon("Dialing failed", "Unexpected error, see log for details");
+                Log("ERROR: " + url);
+                Log("ERROR: " + e);
             }
             finally
             {
                 _flagHttpClientBusy = false;
-            }
-        }
-
-        private void CapClipboardFn()
-        {
-            while (!_flagAppExit)
-            {
-                if (_flagNeedCBCapture > 0)
-                {
-                    Keyboard.SimulateKeyStroke('c', ctrl: true);
-                    //SendKeys.SendWait("^c");
-                    Interlocked.Decrement(ref _flagNeedCBCapture);
-                    Log("CTRL+C");
-                }
-                Thread.Sleep(100);
             }
         }
 
@@ -170,60 +150,65 @@ namespace HTDialer
         // ===============================================================================================================================
         private void hook_hotkey_pressed(object sender, HTDialer.Utils.HotkeyMonitor.KeyPressedEventArgs e)
         {
-            Interlocked.Increment(ref _flagNeedCBCapture);
+            //Keyboard.SimulateKeyStroke('c', ctrl: true);
+            this._flagActionDoCall = true;
+            //
+            Thread.Sleep(1000);
+            SendKeys.SendWait("^c");
+            SendKeys.Flush();
         }
 
         private void hook_clipboard_event(object sender, HTDialer.Utils.ClipboardMonitor.ClipboardEventArgs e)
         {
+            // capture only if the hotkey pressed
+            if (!this._flagActionDoCall) return;
+            this._flagActionDoCall = false;
+            // clear and validate the destination
             string dst = e.Text;
-            _numberOriginal = e.Text;
-            //
-            if (dst.Length > 64) return;
-            //
-            Log("CLIPBOARD_TEXT: " + dst);
-            // 
-            dst = destinationValidator.Format(dst);
-            if (!destinationValidator.IsValid(dst))
+            if (dst.Length <= 64)
             {
-                return;
+                _numberOriginal = e.Text;
+                dst = destinationValidator.Clear(dst);
+                //
+                if (destinationValidator.IsValid(dst))
+                {
+                    fieldLastNumber.Text = dst;
+                    this.DoMakeCall();
+                }
             }
-            fieldLastNumber.Text = dst;
-            ShowBallon("Number captured", _numberOriginal);
         }
 
         private void buttonApply_Click(object sender, EventArgs e)
         {
             string hkey = fieldHotkey.Text;
-            string regex = fieldRegex.Text;
             string url = fieldUrl.Text;
-            string credentialsUN = fieldHttpUsername.Text;
-            string credentialsPW = fieldHttpPassword.Text;
             //
             if (!hotkeyMonitor.IsValid(hkey))
             {
-                MessageBox.Show("Hotkey is incorrect, please define it", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Invalid hotkey, please redefine it", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (String.IsNullOrEmpty(url))
             {
-                MessageBox.Show("Please define a URL", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("You must define URL", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             //
-            configurationManager.Configuration().Regex = regex;
+            configurationManager.Configuration().Regex = fieldRegex.Text;
+            configurationManager.Configuration().CutChars = fieldCutchars.Text;
             configurationManager.Configuration().Hotkey = hkey;
             configurationManager.Configuration().Url = url;
-            configurationManager.Configuration().Credentials = (String.IsNullOrEmpty(credentialsUN) ? "" : credentialsUN + ":" + credentialsPW);
-            configurationManager.Configuration().ShowInTaskbar = fieldVisibleInTaskbar.Checked;
+            configurationManager.Configuration().Credentials = (String.IsNullOrEmpty(fieldHttpUsername.Text) ? "" : fieldHttpUsername.Text + ":" + fieldHttpPassword.Text);
+            configurationManager.Configuration().ShowInTaskbar = fieldShowInTaskbar.Checked;
             //            
             try
             {
                 hotkeyMonitor.SetKey(hkey);
-                destinationValidator.ApplyRegex(regex);
+                destinationValidator.Configure(configurationManager.Configuration());
             }
             catch (Exception exc)
             {
-                MessageBox.Show(exc.ToString(), "Apply failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(exc.ToString(), "Can't applying new settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             // update UI
@@ -267,8 +252,8 @@ namespace HTDialer
 
         private void buttonTestregex_Click(object sender, EventArgs e)
         {
-            string n = destinationValidator.Format(fieldLastNumber.Text);
-            Log("destinatin: " + n + ", validation: " + destinationValidator.IsValid(n));
+            string n = destinationValidator.Clear(fieldLastNumber.Text);
+            Log("destinatin: " + n + ", IsValid: " + destinationValidator.IsValid(n));
         }
 
         private void buttonCloseApp_Click(object sender, EventArgs e)
@@ -276,14 +261,8 @@ namespace HTDialer
             DialogResult dialogResult = MessageBox.Show("Are you sure to close the application?", "Closing application", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.Yes)
             {
-                this._flagAppExit = true;
                 Application.Exit();
             }
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button1_Click(object sender, EventArgs e)

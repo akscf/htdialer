@@ -16,7 +16,7 @@ namespace HTDialer.Utils
 {
     class ConfigurationManager
     {
-        private const int VERSION = 4;
+        private const int VERSION = 5;
         private String filename;
         public Configuration configuration;
 
@@ -82,8 +82,9 @@ namespace HTDialer.Utils
             configuration.Url = storeOld && !String.IsNullOrEmpty(old.Url) ?  old.Url : @"http://127.0.0.1/cgi-bin/cgiServer.exx?number=%number%";
             configuration.Hotkey = storeOld && !String.IsNullOrEmpty(old.Hotkey) ? old.Hotkey: @"ctrl+alt+f12";
             configuration.Regex = storeOld && !String.IsNullOrEmpty(old.Regex) ? old.Regex : @"^\d{7,11}$";
+            configuration.CutChars = storeOld && !String.IsNullOrEmpty(old.CutChars) ? old.Regex : @"+-()";
             configuration.Credentials = storeOld && !String.IsNullOrEmpty(old.Credentials) ? old.Credentials : "";
-            configuration.ShowInTaskbar = storeOld && old.ShowInTaskbar != null ? old.ShowInTaskbar : false;
+            configuration.ShowInTaskbar = storeOld ? old.ShowInTaskbar : false;
             //
             return configuration;
         }

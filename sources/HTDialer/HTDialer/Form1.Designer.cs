@@ -35,7 +35,7 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.fieldVisibleInTaskbar = new System.Windows.Forms.CheckBox();
+            this.fieldShowInTaskbar = new System.Windows.Forms.CheckBox();
             this.fieldHttpUsername = new System.Windows.Forms.TextBox();
             this.fieldHttpPassword = new System.Windows.Forms.TextBox();
             this.fieldRegex = new System.Windows.Forms.TextBox();
@@ -53,6 +53,8 @@
             this.fieldLastNumber = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.fieldCutchars = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -60,7 +62,7 @@
             // 
             // buttonApply
             // 
-            this.buttonApply.Location = new System.Drawing.Point(401, 210);
+            this.buttonApply.Location = new System.Drawing.Point(405, 210);
             this.buttonApply.Name = "buttonApply";
             this.buttonApply.Size = new System.Drawing.Size(75, 23);
             this.buttonApply.TabIndex = 4;
@@ -80,8 +82,10 @@
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.fieldCutchars);
+            this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.fieldVisibleInTaskbar);
+            this.groupBox1.Controls.Add(this.fieldShowInTaskbar);
             this.groupBox1.Controls.Add(this.fieldHttpUsername);
             this.groupBox1.Controls.Add(this.fieldHttpPassword);
             this.groupBox1.Controls.Add(this.fieldRegex);
@@ -103,32 +107,32 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(30, 133);
+            this.label6.Location = new System.Drawing.Point(27, 157);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(36, 13);
             this.label6.TabIndex = 14;
             this.label6.Text = "Other:";
             // 
-            // fieldVisibleInTaskbar
+            // fieldShowInTaskbar
             // 
-            this.fieldVisibleInTaskbar.AutoSize = true;
-            this.fieldVisibleInTaskbar.Location = new System.Drawing.Point(76, 131);
-            this.fieldVisibleInTaskbar.Name = "fieldVisibleInTaskbar";
-            this.fieldVisibleInTaskbar.Size = new System.Drawing.Size(102, 17);
-            this.fieldVisibleInTaskbar.TabIndex = 13;
-            this.fieldVisibleInTaskbar.Text = "Show in taskbar";
-            this.fieldVisibleInTaskbar.UseVisualStyleBackColor = true;
+            this.fieldShowInTaskbar.AutoSize = true;
+            this.fieldShowInTaskbar.Location = new System.Drawing.Point(76, 157);
+            this.fieldShowInTaskbar.Name = "fieldShowInTaskbar";
+            this.fieldShowInTaskbar.Size = new System.Drawing.Size(102, 17);
+            this.fieldShowInTaskbar.TabIndex = 13;
+            this.fieldShowInTaskbar.Text = "Show in taskbar";
+            this.fieldShowInTaskbar.UseVisualStyleBackColor = true;
             // 
             // fieldHttpUsername
             // 
-            this.fieldHttpUsername.Location = new System.Drawing.Point(76, 100);
+            this.fieldHttpUsername.Location = new System.Drawing.Point(76, 126);
             this.fieldHttpUsername.Name = "fieldHttpUsername";
             this.fieldHttpUsername.Size = new System.Drawing.Size(164, 20);
             this.fieldHttpUsername.TabIndex = 12;
             // 
             // fieldHttpPassword
             // 
-            this.fieldHttpPassword.Location = new System.Drawing.Point(309, 98);
+            this.fieldHttpPassword.Location = new System.Drawing.Point(309, 124);
             this.fieldHttpPassword.Name = "fieldHttpPassword";
             this.fieldHttpPassword.Size = new System.Drawing.Size(167, 20);
             this.fieldHttpPassword.TabIndex = 11;
@@ -148,12 +152,11 @@
             this.label3.Size = new System.Drawing.Size(41, 13);
             this.label3.TabIndex = 6;
             this.label3.Text = "Regex:";
-            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(246, 100);
+            this.label5.Location = new System.Drawing.Point(246, 126);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(56, 13);
             this.label5.TabIndex = 10;
@@ -177,7 +180,7 @@
             // 
             // fieldUrl
             // 
-            this.fieldUrl.Location = new System.Drawing.Point(76, 71);
+            this.fieldUrl.Location = new System.Drawing.Point(76, 97);
             this.fieldUrl.Name = "fieldUrl";
             this.fieldUrl.Size = new System.Drawing.Size(400, 20);
             this.fieldUrl.TabIndex = 3;
@@ -185,7 +188,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 100);
+            this.label4.Location = new System.Drawing.Point(8, 126);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 8;
@@ -194,7 +197,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(8, 75);
+            this.label2.Location = new System.Drawing.Point(8, 101);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 13);
             this.label2.TabIndex = 2;
@@ -271,6 +274,22 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(8, 74);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(55, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Cut chars:";
+            // 
+            // fieldCutchars
+            // 
+            this.fieldCutchars.Location = new System.Drawing.Point(76, 71);
+            this.fieldCutchars.Name = "fieldCutchars";
+            this.fieldCutchars.Size = new System.Drawing.Size(400, 20);
+            this.fieldCutchars.TabIndex = 16;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -283,6 +302,8 @@
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(526, 520);
+            this.MinimumSize = new System.Drawing.Size(526, 520);
             this.Name = "Form1";
             this.Text = "HTDialer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -321,7 +342,9 @@
         private System.Windows.Forms.TextBox fieldHttpUsername;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox fieldVisibleInTaskbar;
+        private System.Windows.Forms.CheckBox fieldShowInTaskbar;
+        private System.Windows.Forms.TextBox fieldCutchars;
+        private System.Windows.Forms.Label label7;
     }
 }
 
