@@ -15,7 +15,8 @@ using System.Windows.Automation;
 
 /**
  *
- * @author AlexandrinK <aks@cforge.org>
+ * Copyright (C) AlexandrinKS
+ * https://akscf.me/
  */
 namespace HTDialer
 {

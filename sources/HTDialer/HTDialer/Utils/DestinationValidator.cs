@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 /**
  *
- * @author AlexandrinKS <aks@cforge.org>
+ * Copyright (C) AlexandrinKS
+ * https://akscf.me/
  */
 namespace HTDialer.Utils
 {

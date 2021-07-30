@@ -11,7 +11,8 @@ using System.Windows.Forms;
 
 /**
  * 
- * @author AlexandrinK <aks@cforge.org>
+ * Copyright (C) AlexandrinKS
+ * https://akscf.me/
  */
 namespace HTDialer.Utils
 {

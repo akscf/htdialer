@@ -7,7 +7,8 @@ using System.Xml.Serialization;
 
 /**
  * 
- * @author AlexandrinK <aks@cforge.org>
+ * Copyright (C) AlexandrinKS
+ * https://akscf.me/
  */
 namespace HTDialer.Models.Configurations
 {
